@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ssh_known_hosts_edit.ssh_known_hosts_edit import SSHKnownHostsEdit
+from ssh_known_hosts_edit import SSHKnownHostsEdit
 
 TEST_KEY_1 = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl'
 TEST_KEY_2 = ('ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt'
