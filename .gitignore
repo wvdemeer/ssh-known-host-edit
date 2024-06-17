@@ -1,0 +1,17 @@
+.env.private
+.env.secret
+
+*.pyc
+.python-version
+*.egg-info
+
+.vscode/
+.ruff_cache/
+.cache/
+dist/
+build/
+venv/
+secrets/
+
+Pipfile
+.idea/
