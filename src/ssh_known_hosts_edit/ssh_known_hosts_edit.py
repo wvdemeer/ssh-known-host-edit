@@ -1,16 +1,20 @@
+"""OpenSSH known_hosts file edit tool."""
+
 import os
 import stat
-import sys
 import tempfile
 from pathlib import Path
-from subprocess import PIPE, Popen, DEVNULL
+from subprocess import DEVNULL, PIPE, Popen
+from typing import Optional
 
 
 class SSHKnownHostsEditException(Exception):
     """Something went wrong trying to edit ~/.ssh/known_hosts."""
 
+
 class NoSSHKnownHostsFileException(SSHKnownHostsEditException):
     """~/.ssh/known_hosts does not exist, and cannot be created."""
+
 
 class NoSSHKeygenException(SSHKnownHostsEditException):
     """OpenSSH's ssh-keygen tool is not found."""
@@ -19,12 +23,12 @@ class NoSSHKeygenException(SSHKnownHostsEditException):
 class SSHKnownHostsEdit:
     """Helper class to edit ~/.ssh/known_hosts."""
 
-    def __init__(self, *, known_hosts_file_location: str | None = None):
+    def __init__(self, *, known_hosts_file_location: Optional[str] = None):
         self.SSH_KNOWN_HOSTS: Path = self._find_known_hosts(known_hosts_file_location)
         self.SSH_KEYGEN: Path = self._find_ssh_keygen()
         self.IS_KNOWN_HOSTS_HASHED = self._is_known_hosts_hashed()
 
-    def _find_known_hosts(self, known_hosts_file_location: str | None) -> bool:
+    def _find_known_hosts(self, known_hosts_file_location: Optional[str]) -> bool:
         if known_hosts_file_location:
             return Path(known_hosts_file_location)
         # TODO: more complex logic needed?
@@ -97,7 +101,7 @@ class SSHKnownHostsEdit:
             command = [str(self.SSH_KEYGEN), '-H', '-f', str(tmp_file)]
             try:
                 with Popen(command, stdout=DEVNULL, stderr=DEVNULL) as proc:  # noqa: S603
-                    return_code = proc.wait(timeout=10)
+                    return_code = proc.wait(timeout=10)  # noqa: F841
                 with tmp_file.open() as f:
                     return f.read().strip()
             except OSError as e:
@@ -117,7 +121,7 @@ class SSHKnownHostsEdit:
                 # # Host github.com found: line 1500
                 # github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
                 # # Host github.com found: line 1501
-                # github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+                # github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEe...
 
                 res = []
                 for b in proc.stdout:
@@ -125,7 +129,7 @@ class SSHKnownHostsEdit:
                     if line.strip().startswith('#'):
                         continue
                     res.append((' '.join(line.split(" ")[1:])).strip())
-                return_code = proc.wait(timeout=10)
+                return_code = proc.wait(timeout=10)  # noqa: F841
                 return res
         except OSError as e:
             raise SSHKnownHostsEditException from e
@@ -139,7 +143,7 @@ class SSHKnownHostsEdit:
         command = [str(self.SSH_KEYGEN), '-R', host, '-f', str(self.SSH_KNOWN_HOSTS)]
         try:
             with Popen(command, stdout=DEVNULL, stderr=DEVNULL) as proc:  # noqa: S603
-                return_code = proc.wait(timeout=10)
+                return_code = proc.wait(timeout=10)  # noqa: F841
         except OSError as e:
             raise SSHKnownHostsEditException from e
 

@@ -72,7 +72,7 @@ def test_ssh_known_hosts_edit_add_1e(known_hosts_filename):
     _write_file_content(known_hosts_filename, f"{TEST_HOSTNAME_HASHED} {TEST_KEY_1}\n")
     edit = SSHKnownHostsEdit(known_hosts_file_location=known_hosts_filename)
     assert edit.add_to_known_hosts(TEST_HOSTNAME, TEST_KEY_2) is True
-    # Note: the hashed hostname will based on a random hash, so this test can't predict it
+    # Note: the hashed hostname will be based on a random hash, so this test can't predict it
 
     with open(known_hosts_filename) as f:  # noqa: PTH123
         actual_content = f.read()

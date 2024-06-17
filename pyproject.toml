@@ -5,13 +5,23 @@ readme = "README.md"
 authors= [
     { name="Wim Van de Meersche", email="wim.vandemeersche@ugent.be"},
 ]
-requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Internet",
+  "Topic :: Security",
+  "Topic :: Software Development :: Libraries",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+]
+requires-python = ">=3.7"
 
 dynamic = [ "version" ]
 
-
-dependencies = [
-]
+dependencies = []
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
