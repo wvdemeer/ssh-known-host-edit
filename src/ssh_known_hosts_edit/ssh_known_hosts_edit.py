@@ -6,7 +6,7 @@ import stat
 import tempfile
 from pathlib import Path
 from subprocess import DEVNULL, PIPE, Popen
-from typing import Optional
+from typing import Optional, Union
 
 
 class SSHKnownHostsEditException(Exception):
@@ -234,7 +234,7 @@ class SSHKnownHostsEdit:
         self.SSH_KNOWN_HOSTS_TMP.replace(self.SSH_KNOWN_HOSTS)
         return removed
 
-    def remove_from_known_hosts_by_pubkey(self, public_key: str) -> bool:
+    def remove_from_known_hosts_by_pubkey(self, public_key: Union[str, list[str]]) -> bool:
         """Remove all lines with a specific public key from ~/.ssh/known_hosts (if they are present).
 
         @param public_key: The pubkey to remove.
@@ -242,8 +242,9 @@ class SSHKnownHostsEdit:
         """
         if not self.SSH_KNOWN_HOSTS.is_file():
             return False
-        public_key = self._normalize_key(public_key)
-        return self._remove_lines(endswiths=[public_key]) > 0
+        if not isinstance(public_key, list):
+            public_key = [public_key]
+        return self._remove_lines(endswiths=[self._normalize_key(pk) for pk in public_key]) > 0
 
     def remove_from_known_hosts_by_host_and_pubkey(self, host: str, public_key: str) -> bool:
         """Remove the keys for a specific host and public key pair from ~/.ssh/known_hosts (if it is present).
